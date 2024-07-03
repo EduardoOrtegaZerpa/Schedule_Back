@@ -1,15 +1,17 @@
 const express = require('express');
-const sequelize = require('./config/database'); // Ajustado para importar Sequelize
+const sequelize = require('./database');
 const apiRoutes = require('./routes');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const tokenManager = require('./security/TokenManager');
+require('dotenv').config();
 
 const app = express();
-const port = 3001;
+const port = process.env.BACKEND_PORT;
 
 
 const corsOptions = {
-    origin: 'http://localhost:4200',
+    origin: process.env.CORS_ORIGIN,
     credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
@@ -20,6 +22,7 @@ app.use(express.json());
 
 app.use(cors(corsOptions));
 app.use(cookieParser());
+app.use(tokenManager.refreshTokenMiddleware());
 app.use((req, res, next) => {
     console.log(` -> [${new Date().toISOString()}]Method: ${req.method}, URL: ${req.url}`);
     next();
