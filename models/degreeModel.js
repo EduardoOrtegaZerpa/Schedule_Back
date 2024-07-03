@@ -19,3 +19,5 @@ const Degree = sequelize.define('degree', {
     tableName: 'degree',
     timestamps: false
 });
+
+module.exports = {Degree};
