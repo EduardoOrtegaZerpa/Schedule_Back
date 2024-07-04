@@ -54,6 +54,8 @@ const degreeController = {
         try {
             const degree = req.body;
 
+            console.log(degree);
+
             const existingDegree = await Degree.findOne({
                 where: {
                     name: degree.name
@@ -64,9 +66,9 @@ const degreeController = {
                 return res.status(400).send({error: 'Degree already exists', response: null, result: false});
             }
 
-            await Degree.create({response: degree, result: true});
+            const newDegree = await Degree.create(degree);
 
-            res.json(degree);
+            res.json({response: newDegree, result: true});
         } catch (error) {
             res.status(500).send({error: error.message, response: null, result: false});
         }

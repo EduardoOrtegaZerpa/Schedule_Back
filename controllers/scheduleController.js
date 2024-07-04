@@ -43,9 +43,9 @@ const scheduleController = {
                 return res.status(400).send({error: 'Schedule already exists', response: null, result: false});
             }
 
-            await Schedule.create(schedule);
+            const newSchedule = await Schedule.create(schedule);
 
-            res.json({response: schedule, result: true});
+            res.json({response: newSchedule, result: true});
         } catch (error) {
             res.status(500).send({error: error.message, response: null, result: false});
         }

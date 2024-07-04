@@ -65,9 +65,9 @@ const groupController = {
                 return res.status(400).send({error: 'Group already exists', response: null, result: false});
             }
 
-            await Group.create(group);
+            const newGroup = await Group.create(group);
 
-            res.json({response: group, result: true});
+            res.json({response: newGroup, result: true});
         } catch (error) {
             res.status(500).send({error: error.message, response: null, result: false});
         }

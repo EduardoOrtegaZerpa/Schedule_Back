@@ -65,9 +65,9 @@ const subjectController = {
                 return res.status(400).send({error: 'Subject already exists', response: null, result: false});
             }
 
-            await Subject.create(subject);
+            const newSubject = await Subject.create(subject);
 
-            res.json({response: subject, result: true});
+            res.json({response: newSubject, result: true});
 
         } catch (error) {
             res.status(500).send({error: error.message, response: null, result: false});
