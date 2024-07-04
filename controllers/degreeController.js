@@ -1,5 +1,6 @@
 const { response } = require('express');
 const {Degree} = require('../models/degreeModel');
+const {Subject} = require('../models/subjectModel');
 
 const degreeController = {
 
@@ -20,6 +21,30 @@ const degreeController = {
             } else {
                 res.status(404).send({error: 'Degree not found', response: null, result: false});
             }
+        } catch (error) {
+            res.status(500).send({error: error.message, response: null, result: false});
+        }
+    },
+
+    getSubjectsByDegree: async (req, res) => {
+        try {
+            const degree = await Degree.findByPk(req.params.id);
+
+            if (!degree) {
+                return res.status(404).send({error: 'Degree not found', response: null, result: false});
+            }
+
+            const subjects = await Subject.findAll({
+                where: {
+                    degree_id: req.params.id
+                }
+            });
+
+            if (subjects.length === 0) {
+                res.status(404).send({error: 'Subjects not found', response: null, result: false});
+            }
+
+            res.json({response: subjects, result: true});
         } catch (error) {
             res.status(500).send({error: error.message, response: null, result: false});
         }

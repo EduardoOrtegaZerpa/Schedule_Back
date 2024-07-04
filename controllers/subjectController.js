@@ -1,4 +1,5 @@
 const { Subject } = require('../models/subjectModel');
+const { Group } = require('../models/groupModel');
 
 
 const subjectController = {
@@ -25,19 +26,24 @@ const subjectController = {
         }
     },
 
-    getSubjectsByDegree: async (req, res) => {
+    getGroupsBySubject: async (req, res) => {
         try {
-            const subjects = await Subject.findAll({
-                where: {
-                    degree_id: req.params.id
-                }
-            });
-
-            if (subjects.length === 0) {
-                res.status(404).send({error: 'Subjects not found', response: null, result: false});
+            const subject = await Subject.findByPk(req.params.id);
+            if (!subject) {
+                return res.status(404).send({error: 'Subject not found', response: null, result: false});
             }
 
-            res.json({response: subjects, result: true});
+            const groups = await Group.findAll({
+                where: {
+                    subject_id: req.params.id
+                }
+            });
+            
+            if (groups.length === 0) {
+                res.status(404).send({error: 'Groups not found', response: null, result: false});
+            }
+
+            res.json({response: groups, result: true});
         } catch (error) {
             res.status(500).send({error: error.message, response: null, result: false});
         }

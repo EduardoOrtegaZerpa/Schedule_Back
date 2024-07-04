@@ -1,6 +1,7 @@
 const { RoleEnum } = require('../config/enum');
 const { User } = require('../models/userModel');
 const tokenManager = require('../security/TokenManager');
+const crypto = require('crypto');
 
 
 const userController = {
@@ -14,7 +15,7 @@ const userController = {
             const user = await User.findOne({
                 where: {
                     username,
-                    password: hashedPassword
+                    passwordHash: hashedPassword
                 }
             });
 

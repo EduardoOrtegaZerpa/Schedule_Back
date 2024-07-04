@@ -34,7 +34,7 @@ sequelize.authenticate()
     .then(() => {
         console.log('Conectado a la base de datos con Sequelize');
 
-        return sequelize.sync({force: true});
+        return sequelize.sync({force: false});
     })
     .then(() => {
         console.log('Modelos sincronizados con la base de datos');

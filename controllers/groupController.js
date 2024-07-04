@@ -1,4 +1,5 @@
 const { Group } = require('../models/groupModel');
+const { Schedule } = require('../models/scheduleModel');
 
 
 const groupController = {
@@ -25,19 +26,24 @@ const groupController = {
         }
     },
 
-    getGroupsBySubject: async (req, res) => {
+    getSchedulesByGroup: async (req, res) => {
         try {
-            const groups = await Group.findAll({
+            const group = await Group.findByPk(req.params.id);
+            if (!group) {
+                return res.status(404).send({error: 'Group not found', response: null, result: false});
+            }
+
+            const schedules = await Schedule.findAll({
                 where: {
-                    subject_id: req.params.id
+                    group_id: req.params.id
                 }
             });
 
-            if (groups.length === 0) {
-                res.status(404).send({error: 'Groups not found', response: null, result: false});
+            if (schedules.length === 0) {
+                res.status(404).send({error: 'Schedules not found', response: null, result: false});
             }
 
-            res.json({response: groups, result: true});
+            res.json({response: schedules, result: true});
         } catch (error) {
             res.status(500).send({error: error.message, response: null, result: false});
         }
