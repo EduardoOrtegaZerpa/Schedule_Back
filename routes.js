@@ -10,6 +10,7 @@ const tokenManager = require('./security/TokenManager');
 
 // USER
 router.post('/login', userController.login);
+router.get('/validate', userController.validateCookie);
 
 // DEGREE
 router.get('/degrees', degreeController.getAllDegrees);

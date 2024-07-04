@@ -102,6 +102,7 @@ class TokenManager {
 
         };
     }
+
 }
 
 const secretKey = process.env.TOKEN_SECRET_KEY;

@@ -34,6 +34,35 @@ const userController = {
         } catch (error) {
             res.status(500).send({error: error.message, response: null, result: false});
         }
+    },
+
+    validateCookie: async (req, res) => {
+        try {
+            const accessToken = req.cookies.accessToken;
+            const refreshToken = req.cookies.refreshToken;
+
+            if (!accessToken || !refreshToken) {
+                return res.status(401).send({error: 'Unauthorized', response: null, result: false});
+            }
+
+            const accessTokenPayload = await tokenManager.tokenVerifier.verifyAccessToken(accessToken);
+            const refreshTokenPayload = await tokenManager.tokenVerifier.verifyRefreshToken(refreshToken);
+
+            if (!accessTokenPayload || !refreshTokenPayload) {
+                return res.status(401).send({error: 'Unauthorized', response: null, result: false});
+            }
+
+            const user = await User.findByPk(accessTokenPayload.userId);
+
+            if (!user) {
+                return res.status(401).send({error: 'Unauthorized', response: null, result: false});
+            }
+
+            res.status(200).send({result: true});
+
+        } catch (error) {
+            res.status(500).send({error: error.message, response: null, result: false});
+        }
     }
 };
 

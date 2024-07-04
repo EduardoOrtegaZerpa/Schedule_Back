@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 class TokenGenerator {
-    constructor(secretKey, refreshTokenSecretKey, accessTokenExpiry = '1m', refreshTokenExpiry = '7d') {
+    constructor(secretKey, refreshTokenSecretKey, accessTokenExpiry = '1d', refreshTokenExpiry = '7d') {
         this.secretKey = secretKey;
         this.refreshTokenSecretKey = refreshTokenSecretKey;
         this.accessTokenExpiry = accessTokenExpiry;
