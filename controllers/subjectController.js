@@ -1,0 +1,113 @@
+const { Subject } = require('../models/subjectModel');
+
+
+const subjectController = {
+
+    getAllSubjects: async (req, res) => {
+        try {
+            const subjects = await Subject.findAll();
+            res.json({response: subjects, result: true});
+        } catch (error) {
+            res.status(500).send({error: error.message, response: null, result: false});
+        }
+    },
+
+    getSubjectById: async (req, res) => {
+        try {
+            const subject = await Subject.findByPk(req.params.id);
+            if (subject) {
+                res.json({response: subject, result: true});
+            } else {
+                res.status(404).send({error: 'Subject not found', response: null, result: false});
+            }
+        } catch (error) {
+            res.status(500).send({error: error.message, response: null, result: false});
+        }
+    },
+
+    getSubjectsByDegree: async (req, res) => {
+        try {
+            const subjects = await Subject.findAll({
+                where: {
+                    degree_id: req.params.id
+                }
+            });
+
+            if (subjects.length === 0) {
+                res.status(404).send({error: 'Subjects not found', response: null, result: false});
+            }
+
+            res.json({response: subjects, result: true});
+        } catch (error) {
+            res.status(500).send({error: error.message, response: null, result: false});
+        }
+    },
+
+    createSubject: async (req, res) => {
+        try {
+            const subject = req.body;
+            const degreeId = req.params.degreeId;
+
+            const existingSubject = await Subject.findOne({
+                where: {
+                    name: subject.name && 
+                    subject.degree_id === degreeId
+                }
+            });
+
+            if (existingSubject) {
+                return res.status(400).send({error: 'Subject already exists', response: null, result: false});
+            }
+
+            await Subject.create(subject);
+
+            res.json({response: subject, result: true});
+
+        } catch (error) {
+            res.status(500).send({error: error.message, response: null, result: false});
+        }
+    },
+
+    updateSubject: async (req, res) => {
+        try {
+            const subject = req.body;
+
+            const existingSubject = await Subject.findByPk(req.params.id);
+
+            if (!existingSubject) {
+                return res.status(404).send({error: 'Subject not found', response: null, result: false});
+            }
+
+            await existingSubject.update(subject);
+
+            res.json({response: subject, result: true});
+
+        } catch (error) {
+            res.status(500).send({error: error.message, response: null, result: false});
+        }
+    },
+
+    deleteSubject: async (req, res) => {
+        try {
+            const subject = await Subject.findByPk(req.params.id);
+
+            if (!subject) {
+                return res.status(404).send({error: 'Subject not found', response: null, result: false});
+            }
+
+            await subject.destroy();
+
+            res.json({result: true});
+
+        } catch (error) {
+            res.status(500).send({error: error.message, response: null, result: false});
+        }
+    }
+
+
+
+
+};
+
+
+module.exports = subjectController;
