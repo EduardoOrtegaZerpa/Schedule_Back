@@ -38,10 +38,6 @@ const subjectController = {
                     subject_id: req.params.id
                 }
             });
-            
-            if (groups.length === 0) {
-                res.status(404).send({error: 'Groups not found', response: null, result: false});
-            }
 
             res.json({response: groups, result: true});
         } catch (error) {
@@ -54,12 +50,12 @@ const subjectController = {
             const subject = req.body;
             const degreeId = req.params.degreeId;
 
-            const existingSubject = await Subject.findOne({
-                where: {
-                    name: subject.name && 
-                    subject.degree_id === degreeId
-                }
-            });
+                const existingSubject = await Subject.findOne({
+                    where: {
+                        name: subject.name,
+                        degree_id: degreeId
+                    }
+                });
 
             if (existingSubject) {
                 return res.status(400).send({error: 'Subject already exists', response: null, result: false});

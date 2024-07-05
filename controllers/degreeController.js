@@ -40,10 +40,6 @@ const degreeController = {
                 }
             });
 
-            if (subjects.length === 0) {
-                res.status(404).send({error: 'Subjects not found', response: null, result: false});
-            }
-
             res.json({response: subjects, result: true});
         } catch (error) {
             res.status(500).send({error: error.message, response: null, result: false});
@@ -53,8 +49,6 @@ const degreeController = {
     createDegree: async (req, res) => {
         try {
             const degree = req.body;
-
-            console.log(degree);
 
             const existingDegree = await Degree.findOne({
                 where: {

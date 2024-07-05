@@ -22,6 +22,10 @@ const Subject = sequelize.define('subject', {
     semester: {
         type: DataTypes.INTEGER,
         allowNull: false
+    },
+    year: {
+        type: DataTypes.INTEGER,
+        allowNull: false
     }
 }, {
     tableName: 'subject',

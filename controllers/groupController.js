@@ -39,10 +39,6 @@ const groupController = {
                 }
             });
 
-            if (schedules.length === 0) {
-                res.status(404).send({error: 'Schedules not found', response: null, result: false});
-            }
-
             res.json({response: schedules, result: true});
         } catch (error) {
             res.status(500).send({error: error.message, response: null, result: false});
