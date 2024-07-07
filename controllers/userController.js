@@ -15,6 +15,12 @@ if (!fs.existsSync(scriptPath)) {
     return;
 }
 
+const boundScriptPath = path.resolve(__dirname, '../../ALGORITHM/boundAlgorithm.py');
+if (!fs.existsSync(boundScriptPath)) {
+    console.error('El archivo del script de Python no existe en la ruta proporcionada.');
+    return;
+}
+
 const dayIndexMap = {
     'monday': 0,
     'tuesday': 1,
@@ -30,7 +36,11 @@ function formatOutput(data) {
     const headerMatch = data.match(headerRegex);
 
     if (!headerMatch) {
-        return null;
+        return {
+            days: 0,
+            hours: 0,
+            subjects: []
+        }
     }
 
     const [, day, freeHours] = headerMatch;
@@ -157,6 +167,30 @@ const executePythonScript = async (subjects) => {
     });
 };
 
+const executePythonBoundScript = async (subjects, days, hours) => {
+    const formatSubjects = JSON.stringify(subjects);
+    return new Promise((resolve, reject) => {
+        const pythonProcess = spawn('python', [boundScriptPath, formatSubjects, days, hours]);
+        let result = '';
+
+        pythonProcess.stdout.on('data', (data) => {
+            result += data;
+        });
+
+        pythonProcess.on('close', (code) => {
+            if (code !== 0) {
+                reject(new Error(`Process exited with code ${code}`));
+            } else {
+                resolve(result);
+            }
+        });
+
+        pythonProcess.on('error', (err) => {
+            reject(err);
+        });
+    });
+};
+
 
 const userController = {
     
@@ -213,6 +247,44 @@ const userController = {
             }
 
             const result = await executePythonScript(subjectsData.flat());
+
+            const formattedResult = formatOutput(result);
+
+            if (!formattedResult) {
+                return res.status(500).send({error: 'Error formatting result', response: null, result: false});
+            }
+
+            res.status(200).send({response: formattedResult, result: true});
+
+        } catch (error) {
+            res.status(500).send({error: error.message, response: null, result: false});
+        }
+    },
+
+    getNonOverlappedScheduleWithBound: async (req, res) => {
+        try {
+            const { subjectIds } = req.body;
+            const { days, hours } = req.params;
+
+            const subjects = await Subject.findAll({
+                where: {
+                    id: subjectIds
+                }
+            });
+
+            if (!subjects) {
+                return res.status(404).send({error: 'Subjects not found', response: null, result: false});
+            }
+
+            let subjectsData = await Promise.all(subjects.map(async (subject) => getSubjectData(subject.id)));
+
+            subjectsData = subjectsData.filter(subject => subject !== null);
+
+            if (subjectsData.length === 0) {
+                return res.status(404).send({error: 'Groups not found', response: null, result: false});
+            }
+
+            const result = await executePythonBoundScript(subjectsData.flat(), days, hours);
 
             const formattedResult = formatOutput(result);
 
