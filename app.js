@@ -5,6 +5,8 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const tokenManager = require('./security/TokenManager');
 require('dotenv').config();
+const {setupAssociations} = require('./config/associations');
+const {setupTriggers} = require('./config/triggers');
 
 const app = express();
 const port = process.env.BACKEND_PORT;
@@ -33,6 +35,9 @@ app.use('/api', apiRoutes);
 sequelize.authenticate()
     .then(() => {
         console.log('Conectado a la base de datos con Sequelize');
+
+        setupAssociations();
+        setupTriggers();
 
         return sequelize.sync({force: false});
     })

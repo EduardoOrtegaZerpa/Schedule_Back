@@ -52,8 +52,8 @@ const groupController = {
 
             const existingGroup = await Group.findOne({
                 where: {
-                    name: group.name && 
-                    group.subject_id === subjectId
+                    name: group.name,
+                    subject_id: subjectId
                 }
             });
 

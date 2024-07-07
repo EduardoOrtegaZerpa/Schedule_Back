@@ -14,6 +14,7 @@ const scheduleController = {
 
     getScheduleById: async (req, res) => {
         try {
+            console.log(req.params.id);
             const schedule = await Schedule.findByPk(req.params.id);
             if (schedule) {
                 res.json({response: schedule, result: true});
@@ -32,10 +33,10 @@ const scheduleController = {
 
             const existingSchedule = await Schedule.findOne({
                 where: {
-                    startTime: schedule.startTime &&
-                    schedule.endTime === schedule.endTime &&
-                    schedule.day === schedule.day &&
-                    schedule.group_id === groupId
+                    startTime: schedule.startTime,
+                    endTime: schedule.endTime,
+                    day: schedule.day,
+                    group_id: groupId
                 }
             });
 
