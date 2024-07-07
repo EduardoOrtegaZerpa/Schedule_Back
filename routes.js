@@ -11,8 +11,8 @@ const tokenManager = require('./security/TokenManager');
 // USER
 router.post('/login', userController.login);
 router.get('/validate', userController.validateCookie);
-router.post('/generate/schedule', userController.getNonOverlappedSchedule);
-router.post('/generate/schedule/:days/:hours', userController.getNonOverlappedScheduleWithBound);
+router.post('/generate/schedule', tokenManager.verifyTokenMiddleware(), userController.getNonOverlappedSchedule);
+router.post('/generate/schedule/:days/:hours', tokenManager.verifyTokenMiddleware(), userController.getNonOverlappedScheduleWithBound);
 
 // DEGREE
 router.get('/degrees', degreeController.getAllDegrees);
