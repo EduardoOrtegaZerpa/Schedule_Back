@@ -47,7 +47,7 @@ class TokenManager {
 
                         this.refreshToken(token, refreshToken)
                             .then((newAccessToken) => {
-                                res.cookie('accessToken', newAccessToken, {httpOnly: true});
+                                res.cookie('accessToken', newAccessToken, {httpOnly: true, secure: false});
                                 return next();
                             })
                             .catch(() => {
@@ -88,7 +88,7 @@ class TokenManager {
                             // Generar nuevo token de acceso
                             this.refreshToken(accessToken, refreshToken)
                                 .then((newAccessToken) => {
-                                    res.cookie('accessToken', newAccessToken, {httpOnly: true});
+                                    res.cookie('accessToken', newAccessToken, {httpOnly: true, secure: false});
                                     return next();
                                 })
                                 .catch(() => {
