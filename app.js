@@ -8,6 +8,7 @@ require('dotenv').config();
 const {setupAssociations} = require('./config/associations');
 const {setupTriggers} = require('./config/triggers');
 const https = require('https');
+const fs = require('fs');
 const app = express();
 const port = process.env.BACKEND_PORT;
 const cert = process.env.CERT;
@@ -54,8 +55,8 @@ sequelize.authenticate()
 
         if (cert && key) {
             https.createServer({
-                key: key,
-                cert: cert
+                key: fs.readFileSync(key),
+                cert: fs.readFileSync(cert)
             }, app).listen(port, () => {
                 console.log(`Servidor HTTPS escuchando en el puerto ${port}`);
             });
