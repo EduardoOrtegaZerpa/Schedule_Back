@@ -7,9 +7,11 @@ const tokenManager = require('./security/TokenManager');
 require('dotenv').config();
 const {setupAssociations} = require('./config/associations');
 const {setupTriggers} = require('./config/triggers');
-
+const https = require('https');
 const app = express();
 const port = process.env.BACKEND_PORT;
+const cert = process.env.CERT;
+const key = process.env.KEY;
 
 
 const corsOptions = {
@@ -32,6 +34,8 @@ app.use((req, res, next) => {
 
 app.use('/api', apiRoutes);
 
+
+
 sequelize.authenticate()
     .then(() => {
         console.log('Conectado a la base de datos con Sequelize');
@@ -48,9 +52,18 @@ sequelize.authenticate()
             res.send(`DB connection working on port ${port}!`);
         });
 
-        app.listen(port, () => {
-            console.log(`Server running on port ${port}`)
-        });
+        if (cert && key) {
+            https.createServer({
+                key: key,
+                cert: cert
+            }, app).listen(port, () => {
+                console.log(`Servidor HTTPS escuchando en el puerto ${port}`);
+            });
+        } else {
+            app.listen(port, () => {
+                console.log(`Servidor HTTP escuchando en el puerto ${port}`);
+            });
+        }
 
     })
     .catch(err => console.error('Error al conectar o sincronizar con la base de datos con Sequelize:', err));
