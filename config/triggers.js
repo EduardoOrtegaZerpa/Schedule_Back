@@ -49,12 +49,14 @@ async function checkScheduleHoursDoesNotOverlap(schedule) {
             [Op.or]: [
                 {
                     startTime: {
-                        [Op.between]: [schedule.startTime, schedule.endTime]
+                        [Op.gt]: schedule.startTime,
+                        [Op.lt]: schedule.endTime
                     }
                 },
                 {
                     endTime: {
-                        [Op.between]: [schedule.startTime, schedule.endTime]
+                        [Op.gt]: schedule.startTime,
+                        [Op.lt]: schedule.endTime
                     }
                 }
             ]
