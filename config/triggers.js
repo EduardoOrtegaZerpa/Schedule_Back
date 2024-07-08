@@ -43,6 +43,9 @@ async function checkScheduleHoursDoesNotOverlap(schedule) {
         where: {
             group_id: schedule.group_id,
             day: schedule.day,
+            id: {
+                [Op.ne]: schedule.id
+            },
             [Op.or]: [
                 {
                     startTime: {
@@ -61,7 +64,6 @@ async function checkScheduleHoursDoesNotOverlap(schedule) {
     if (schedules.length > 0) {
         throw new Error('Schedule overlaps with another schedule');
     }
-    
 }
 
 module.exports = {setupTriggers};
