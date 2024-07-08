@@ -214,8 +214,8 @@ const userController = {
             const accessToken = tokenManager.tokenGenerator.generateAccessToken({userId: user.id, role: user.role});
             const refreshToken = tokenManager.tokenGenerator.generateRefreshToken({userId: user.id, role: user.role});
 
-            res.cookie('accessToken', accessToken, {httpOnly: true, secure: true, sameSite: 'none'});
-            res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true, sameSite: 'none'});
+            res.cookie('accessToken', accessToken, {httpOnly: true});
+            res.cookie('refreshToken', refreshToken, {httpOnly: true});
 
             res.status(200).send({response: user, result: true});
 
